@@ -36,13 +36,6 @@ event-driven-lab/
 2. Se configura el entorno con .devcontainer.
 3. Se abre el proyecto en Codespaces para trabajar el taller en la nube.
 
-### Evidencia paso 1
-
-- [ ] Creación del Codespace
-- [ ] Proyecto abierto en Codespaces
-
-![Evidencia paso 1](docs/evidencias/paso-1-codespace.png)
-
 ## Paso 2. Implementación del Producer Service
 
 En este servicio se configura Spring AMQP y se expone un endpoint para enviar mensajes al exchange de RabbitMQ.
@@ -62,7 +55,7 @@ app.rabbitmq.routingkey=messages.routingkey
 
 ### Evidencia paso 2
 
-- [ ] Compilación del producer
+- [x] Compilación del producer
 
 ![Evidencia paso 2 build](docs/evidencias/paso-2-producer-build.png)
 
@@ -82,7 +75,7 @@ app.rabbitmq.queue=messages.queue
 
 ### Evidencia paso 3
 
-- [ ] Compilación del consumer
+- [x] Compilación del consumer
 
 ![Evidencia paso 3 build](docs/evidencias/paso-3-consumer-build.png)
 
@@ -100,9 +93,9 @@ docker push <tu-usuario>/<servicio>:latest
 
 ### Evidencia paso 4
 
-- [ ] Listado de imágenes construidas
-- [ ] Push de producer en Docker Hub
-- [ ] Push de consumer en Docker Hub
+- [x] Listado de imágenes construidas
+- [x] Push de producer en Docker Hub
+- [x] Push de consumer en Docker Hub
 
 ![Evidencia paso 4 imagenes](docs/evidencias/paso-4-docker-images.png)
 ![Evidencia paso 4 push producer](docs/evidencias/paso-4-docker-push-producer.png)
@@ -160,14 +153,14 @@ networks:
 Comandos de despliegue:
 
 ```bash
-docker compose up -d
-docker compose logs consumer
+docker-compose up -d
+docker-compose logs consumer
 ```
 
 ### Evidencia paso 5
 
-- [ ] Levante de servicios con Docker Compose
-- [ ] RabbitMQ Management UI accesible
+- [x] Levante de servicios con Docker Compose
+- [x] RabbitMQ Management UI accesible
 
 ![Evidencia paso 5 compose](docs/evidencias/paso-5-compose-up.png)
 ![Evidencia paso 5 rabbitmq](docs/evidencias/paso-5-rabbitmq-ui.png)
@@ -223,15 +216,13 @@ Nota: en logs se usa el nombre del servicio consumer.
 
 ### Evidencia paso 6
 
-- [ ] Validación de ruta con pwd
-- [ ] Envío exitoso del evento
-- [ ] Logs del consumidor procesando el mensaje
-- [ ] Cola messages.queue visible en RabbitMQ UI
+- [x] Envío exitoso del evento
+- [x] Logs del consumidor procesando el mensaje
+- [x] Logs del productor enviando el mensaje
 
-![Evidencia paso 6 pwd](docs/evidencias/paso-6-pwd.png)
 ![Evidencia paso 6 curl](docs/evidencias/paso-6-curl.png)
 ![Evidencia paso 6 consumer logs](docs/evidencias/paso-6-consumer-logs.png)
-![Evidencia paso 6 rabbitmq queue](docs/evidencias/paso-6-rabbitmq-queue.png)
+![Evidencia paso 6 producer logs](docs/evidencias/paso-6-producer-logs.png)
 
 ## Resultado final del taller
 
