@@ -1,4 +1,4 @@
-# Taller: Arquitectura Orientada a Eventos
+# Creación de Microservicios con Spring Boot, RabbitMQ y Docker Compose
 
 En este taller se documenta una solución de microservicios con Spring Boot, RabbitMQ y Docker Compose. La meta es implementar un flujo simple de eventos donde un productor envía mensajes y un consumidor los procesa.
 
