@@ -1,6 +1,6 @@
 # consumer-service/Dockerfile
 # Usa una imagen base de JRE ligera
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:17-jdk-jammy
 
 # Argumento para el JAR
 ARG JAR_FILE=target/*.jar

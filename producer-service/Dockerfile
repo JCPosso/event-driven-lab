@@ -1,6 +1,6 @@
 # producer-service/Dockerfile
 # Usa una imagen base de JRE ligera que coincida con tu JDK de compilacion
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 
 # Argumento para el JAR (se pasa durante la construccion en docker-compose)
 ARG JAR_FILE=target/*.jar
