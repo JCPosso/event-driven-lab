@@ -1,43 +1,53 @@
-# Event Driven Lab
+# Taller: Arquitectura Orientada a Eventos
 
-Microservicios con Spring Boot + RabbitMQ + Docker Compose.
+En este taller se documenta una solución de microservicios con Spring Boot, RabbitMQ y Docker Compose. La meta es implementar un flujo simple de eventos donde un productor envía mensajes y un consumidor los procesa.
 
-## Objetivo
+## Objetivo del taller
 
-Construir dos servicios:
+Implementar y ejecutar dos microservicios:
 
-- Productor: publica mensajes via API REST.
-- Consumidor: escucha y procesa mensajes desde RabbitMQ.
+- Producer Service: expone un endpoint REST para publicar mensajes.
+- Consumer Service: escucha una cola RabbitMQ y procesa los mensajes recibidos.
 
-## Estructura
+## Estructura del proyecto
 
 ```text
 event-driven-lab/
 |-- producer-service/
 |-- consumer-service/
 |-- .devcontainer/
+|-- docker-compose.yml
 `-- README.md
 ```
 
-## Requisitos
+## Herramientas usadas
 
 - Java 17
 - Maven
-- Docker
+- Spring Boot
+- RabbitMQ
+- Docker y Docker Compose
+- GitHub Codespaces
 - Docker Hub
 
-## 1) Configurar Codespaces
+## Paso 1. Configuración inicial en Codespaces
 
-1. Crea el repositorio en GitHub.
-2. Agrega `.devcontainer/devcontainer.json`.
-3. Crea el Codespace desde `main`.
+1. Se crea el repositorio en GitHub.
+2. Se configura el entorno con .devcontainer.
+3. Se abre el proyecto en Codespaces para trabajar el taller en la nube.
 
+### Evidencia paso 1
 
-## 2) Producer Service
+- [ ] Creación del Codespace
+- [ ] Proyecto abierto en Codespaces
 
-Dependencias: Spring Web, Spring AMQP.
+![Evidencia paso 1](docs/evidencias/paso-1-codespace.png)
 
-Configuracion clave en `producer-service/src/main/resources/application.properties`:
+## Paso 2. Implementación del Producer Service
+
+En este servicio se configura Spring AMQP y se expone un endpoint para enviar mensajes al exchange de RabbitMQ.
+
+Configuración principal:
 
 ```properties
 server.port=8080
@@ -50,11 +60,17 @@ app.rabbitmq.queue=messages.queue
 app.rabbitmq.routingkey=messages.routingkey
 ```
 
-## 3) Consumer Service
+### Evidencia paso 2
 
-Dependencia: Spring AMQP.
+- [ ] Compilación del producer
 
-Configuracion clave en `consumer-service/src/main/resources/application.properties`:
+![Evidencia paso 2 build](docs/evidencias/paso-2-producer-build.png)
+
+## Paso 3. Implementación del Consumer Service
+
+En este servicio se configuran la cola y el listener para recibir y procesar los mensajes publicados por el productor.
+
+Configuración principal:
 
 ```properties
 spring.rabbitmq.host=rabbitmq
@@ -64,9 +80,15 @@ spring.rabbitmq.password=guest
 app.rabbitmq.queue=messages.queue
 ```
 
-## 4) Docker Hub
+### Evidencia paso 3
 
-Ejecuta en cada servicio:
+- [ ] Compilación del consumer
+
+![Evidencia paso 3 build](docs/evidencias/paso-3-consumer-build.png)
+
+## Paso 4. Publicación de imágenes en Docker Hub
+
+Para ambos servicios se ejecuta:
 
 ```bash
 mvn clean package
@@ -76,21 +98,19 @@ docker login -u <tu-usuario>
 docker push <tu-usuario>/<servicio>:latest
 ```
 
-### Evidencia
+### Evidencia paso 4
 
-- [ ] Imagenes creadas
-- [ ] Push de producer
-- [ ] Push de consumer
+- [ ] Listado de imágenes construidas
+- [ ] Push de producer en Docker Hub
+- [ ] Push de consumer en Docker Hub
 
-```md
 ![Evidencia paso 4 imagenes](docs/evidencias/paso-4-docker-images.png)
 ![Evidencia paso 4 push producer](docs/evidencias/paso-4-docker-push-producer.png)
 ![Evidencia paso 4 push consumer](docs/evidencias/paso-4-docker-push-consumer.png)
-```
 
-## 5) Docker Compose
+## Paso 5. Orquestación con Docker Compose
 
-Crea `docker-compose.yml` en la raiz:
+Se define docker-compose.yml con tres servicios: rabbitmq, producer y consumer. Todos comparten la red event_network para comunicarse por nombre.
 
 ```yaml
 version: '3.8'
@@ -137,36 +157,99 @@ networks:
     driver: bridge
 ```
 
-Levantar servicios:
+Comandos de despliegue:
 
 ```bash
 docker compose up -d
-docker logs -f consumer-service
+docker compose logs consumer
 ```
 
-Subir cambios al repositorio:
+### Evidencia paso 5
 
-```bash
-git add docker-compose.yml README.md
-git commit -m "Add docker-compose setup for step 5"
-git push
-```
+- [ ] Levante de servicios con Docker Compose
+- [ ] RabbitMQ Management UI accesible
 
-### Evidencia
-
-- [ ] `docker compose up -d`
-- [ ] RabbitMQ UI
-- [ ] Mensaje enviado y procesado
-
-```md
 ![Evidencia paso 5 compose](docs/evidencias/paso-5-compose-up.png)
 ![Evidencia paso 5 rabbitmq](docs/evidencias/paso-5-rabbitmq-ui.png)
-![Evidencia paso 5 logs](docs/evidencias/paso-5-consumer-log.png)
+
+## Paso 6. Ejecución y validación del flujo de eventos
+
+En Codespaces se valida el flujo de punta a punta.
+
+1. Se verifica la ruta del proyecto:
+
+```bash
+pwd
 ```
 
-## Verificacion final
+Resultado esperado:
 
-1. RabbitMQ activo.
-2. Productor responde en 8080.
-3. Consumidor procesa mensajes.
-4. Imagenes publicadas en Docker Hub.
+```text
+/workspaces/event-driven-lab
+```
+
+2. Se levantan los servicios:
+
+```bash
+docker compose up -d
+```
+
+3. Se envía un evento desde producer:
+
+```bash
+curl -X POST "http://localhost:8080/api/messages/send?message=HolaDesdeCodespaces"
+```
+
+Salida esperada:
+
+```text
+Mensaje 'HolaDesdeCodespaces' enviado!
+```
+
+4. Se verifican logs del consumidor:
+
+```bash
+docker compose logs consumer
+```
+
+Salida esperada:
+
+```text
+Mensaje recibido: 'HolaDesdeCodespaces'
+>>> Mensaje Procesado: HolaDesdeCodespaces
+```
+
+Nota: en logs se usa el nombre del servicio consumer.
+
+### Evidencia paso 6
+
+- [ ] Validación de ruta con pwd
+- [ ] Envío exitoso del evento
+- [ ] Logs del consumidor procesando el mensaje
+- [ ] Cola messages.queue visible en RabbitMQ UI
+
+![Evidencia paso 6 pwd](docs/evidencias/paso-6-pwd.png)
+![Evidencia paso 6 curl](docs/evidencias/paso-6-curl.png)
+![Evidencia paso 6 consumer logs](docs/evidencias/paso-6-consumer-logs.png)
+![Evidencia paso 6 rabbitmq queue](docs/evidencias/paso-6-rabbitmq-queue.png)
+
+## Resultado final del taller
+
+El taller queda completado con comunicación asíncrona funcional entre microservicios usando RabbitMQ. Se logra:
+
+- Publicar mensajes desde una API REST.
+- Consumir y procesar mensajes en otro servicio.
+- Ejecutar el entorno completo con Docker Compose en Codespaces.
+- Publicar imágenes de ambos servicios en Docker Hub.
+
+## Aprendizajes
+
+- La configuración de RabbitMQ debe ser consistente entre productor y consumidor.
+- Docker Compose simplifica la orquestación local y en entornos de laboratorio.
+- Codespaces permite ejecutar el laboratorio completo sin instalación local adicional.
+
+## Autor
+
+- Nombre: Juan Camilo Posso
+- Repositorio: event-driven-lab
+- Fecha: 2026-04-22
