@@ -5,10 +5,10 @@
     "image": "mcr.microsoft.com/devcontainers/java:0-17",
 
     "features": {
-        // Incluye Docker-in-Docker para poder construir imágenes dentro de Codespaces si es necesario
-        // Aunque el despliegue final es en Play with Docker, puede ser útil para pruebas locales.
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-        // Añade explícitamente la feature de Maven
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "moby": true,
+            "dockerDashComposeVersion": "v2"
+        },
         "ghcr.io/devcontainers/features/java:1": {
           "version": "none",
           "installMaven": "true",
@@ -16,6 +16,8 @@
           "installGradle": "false"
         }
     },
+
+    "privileged": true,
 
     // Puertos a exponer desde Codespaces (útil para pruebas locales)
     "forwardPorts": [
@@ -31,17 +33,14 @@
             "extensions": [
                 "vscjava.vscode-java-pack",
                 "vmware.vscode-spring-boot",
-                "pivotal.vscode-spring-boot",
                 "ms-azuretools.vscode-docker",
                 "redhat.java",
-                "pivotal.vscode-boot-dev-pack",
                 "vmware.vscode-boot-dev-pack"
             ]
         }
     },
 
-    // Comando a ejecutar después de crear el contenedor (opcional, ej: instalar algo)
-    // "postCreateCommand": "mvn --version",
+    "postCreateCommand": "docker --version && mvn --version",
 
     // Configura el usuario remoto
     "remoteUser": "vscode"
